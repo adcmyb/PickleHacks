@@ -4,27 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GameplayActivity">
+    tools:context=".MainActivity"
+    android:background="@color/blueish">
 
     <Button
         android:id="@+id/quickplay_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="282dp"
+        android:layout_height="77dp"
         android:backgroundTint="@color/black"
-        android:text="Add to Calebnder"
+        android:textColor="@color/white"
+        android:text="Quick-Play"
         android:textSize="20dp"
-        android:translationX="250dp"
-        android:translationY="250dp" />
+        android:translationX="40dp"
+        android:translationY="320dp" />
 
     <Button
         android:id="@+id/multiplayer_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="282dp"
+        android:layout_height="77dp"
         android:backgroundTint="@color/black"
-        android:text="Add to Calebnder"
+        android:textColor="@color/white"
+        android:text="Multiplayer"
         android:textSize="20dp"
-        android:translationX="250dp"
-        android:translationY="300dp" />
+        android:translationX="405dp"
+        android:translationY="320dp" />
+
+    <com.q42.android.scrollingimageview.ScrollingImageView
+        android:id="@+id/scrollingImageView"
+        android:layout_width="match_parent"
+        android:layout_height="235dp"
+        android:layout_marginTop="35dp"
+        android:translationY="50dp"
+        app:speed="1dp"
+        app:src="@drawable/fullreel"
+        tools:ignore="MissingClass" />
 
     <TextView
         android:id="@+id/game_title"
@@ -32,9 +45,12 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
+        android:fontFamily="serif-monospace"
         android:text="AdMe"
-        android:textColor="#FFFFFF"
-        android:textSize="60sp" />
+        android:textColor="#000000"
+        android:textSize="60sp"
+        android:textStyle="bold"
+        android:translationY="-10dp" />
 
     <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
