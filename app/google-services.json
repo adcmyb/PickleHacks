@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "624441610021",
+    "firebase_url": "https://picklehacks2020.firebaseio.com",
+    "project_id": "picklehacks2020",
+    "storage_bucket": "picklehacks2020.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:624441610021:android:d0935ee03dab24035054cc",
+        "android_client_info": {
+          "package_name": "com.example.picklehacksda"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "624441610021-nl242a06smvgkv9uk8900ja3e3qrq7f2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.picklehacksda",
+            "certificate_hash": "1afa85f21c571da0edc2ed42153f56be91153c01"
+          }
+        },
+        {
+          "client_id": "624441610021-cgn6fh1heifliar6br4gr5h5ho3s9jvh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCyaOtowpTjdR8oIZAJX3qmiB-gW_mSw6U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "624441610021-cgn6fh1heifliar6br4gr5h5ho3s9jvh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
