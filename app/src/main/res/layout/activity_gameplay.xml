@@ -2,93 +2,117 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/relativeLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTint="@color/white"
     tools:context=".GameplayActivity">
 
 
-    <com.devbrackets.android.exomedia.ui.widget.VideoView
-        android:id="@+id/video_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true">
-
-    </com.devbrackets.android.exomedia.ui.widget.VideoView>
-
-    <nl.dionsegijn.konfetti.KonfettiView
-        android:id="@+id/viewKonfetti"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_alignParentBottom="true"
-        android:foregroundGravity="bottom"
-        android:gravity="bottom"
-        android:baselineAligned="false"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.devbrackets.android.exomedia.ui.widget.VideoView
+            android:id="@+id/video_view"
+            android:layout_width="match_parent"
+            android:layout_height="316dp"
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="#000000"
+            android:foregroundGravity="center_horizontal"
+            android:gravity="center_horizontal">
+
+            <TextView
+                android:id="@+id/score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="300dp"
+                android:layout_marginEnd="300dp"
+                android:background="@color/white"
+                android:backgroundTint="@color/white"
+                android:drawableLeft="@drawable/text_entry"
+                android:foregroundGravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:text="0"
+                android:textColor="@color/black"
+                android:textSize="30dp" />
+        </com.devbrackets.android.exomedia.ui.widget.VideoView>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="left"
-            android:layout_weight="1"
-            android:gravity="left"
-            android:orientation="vertical">
+            android:layout_height="100dp"
+            android:baselineAligned="false"
+            android:foregroundGravity="bottom"
+            android:gravity="bottom"
+            android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/guess1"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="left"
                 android:layout_weight="1"
-                android:alpha="0.7"
-                android:insetTop="0dp"
-                android:insetBottom="0dp" />
+                android:gravity="left"
+                android:orientation="vertical">
 
-            <Button
-                android:id="@+id/guess3"
+                <Button
+                    android:id="@+id/guess1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:alpha="0.7"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp" />
+
+                <Button
+                    android:id="@+id/guess3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:alpha="0.7"
+                    android:backgroundTint="@color/blue"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="right"
                 android:layout_weight="1"
-                android:alpha="0.7"
-                android:backgroundTint="@color/teal_700"
-                android:insetTop="0dp"
-                android:insetBottom="0dp" />
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/guess2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:alpha="0.7"
+                    android:backgroundTint="@color/yellow"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp" />
+
+                <Button
+                    android:id="@+id/guess4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:alpha="0.7"
+                    android:backgroundTint="@color/pink"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <LinearLayout
+        <nl.dionsegijn.konfetti.KonfettiView
+            android:id="@+id/viewKonfetti"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="right"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <Button
-                android:id="@+id/guess2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:alpha="0.7"
-                android:backgroundTint="@color/green"
-                android:insetTop="0dp"
-                android:insetBottom="0dp" />
-
-            <Button
-                android:id="@+id/guess4"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:alpha="0.7"
-                android:backgroundTint="@color/orange"
-                android:insetTop="0dp"
-                android:insetBottom="0dp" />
-
-        </LinearLayout>
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 
