@@ -69,7 +69,7 @@ public class MultiplayerActivity extends AppCompatActivity {
     private int score = 0;
     private Duration total = null;
     private boolean correct = false;
-    private String gameid = "abc";
+    private String gameid = "";
     private String uid;
     private long otherPlayerScore = 0;
 
@@ -85,6 +85,8 @@ public class MultiplayerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         createTime = LocalDateTime.now();
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        gameid = intent.getStringExtra("GAMEID");
         numOfGames = 0;
         uniqueID = UUID.randomUUID().toString();
 

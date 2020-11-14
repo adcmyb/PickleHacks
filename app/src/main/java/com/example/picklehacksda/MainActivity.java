@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 //                Toast.makeText(FriendsActivity.this, "Clicked add", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(MainActivity.this, MultiplayerActivity.class);
+                Intent intent = new Intent(MainActivity.this, SelectGameActivity.class);
                 startActivity(intent);
             }
         });
