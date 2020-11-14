@@ -22,39 +22,58 @@
             android:foregroundGravity="center_horizontal"
             android:gravity="center_horizontal">
 
-            <TextView
-                android:id="@+id/score2"
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
-                android:layout_marginStart="500dp"
-                android:layout_marginEnd="200dp"
-                android:background="@color/white"
+                android:layout_marginStart="280dp"
+                android:layout_marginEnd="280dp"
+                android:background="@drawable/text_entry"
                 android:backgroundTint="@color/white"
-                android:drawableLeft="@drawable/text_entry"
-                android:foregroundGravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="0"
-                android:textColor="@color/black"
-                android:textSize="30dp" />
+                android:foregroundGravity="center"
+                android:gravity="center_horizontal|center_vertical"
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/score"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="200dp"
-                android:layout_marginEnd="500dp"
-                android:background="@color/white"
-                android:backgroundTint="@color/white"
-                android:drawableLeft="@drawable/text_entry"
-                android:foregroundGravity="center_horizontal"
-                android:gravity="center_horizontal"
-                android:text="0"
-                android:textColor="@color/black"
-                android:textSize="30dp" />
+                <TextView
+                    android:id="@+id/score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:background="@color/white"
+                    android:backgroundTint="@color/white"
+                    android:drawableLeft="@drawable/text_entry"
+                    android:foregroundGravity="center_horizontal"
+                    android:gravity="center_horizontal"
+                    android:text="0"
+                    android:textColor="@color/black"
+                    android:textSize="30dp" />
+
+                <Chronometer
+                    android:id="@+id/simpleChronometer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center_horizontal"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/score2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="0dp"
+                    android:background="@color/white"
+                    android:backgroundTint="@color/white"
+                    android:drawableLeft="@drawable/text_entry"
+                    android:foregroundGravity="center_horizontal"
+                    android:gravity="center_horizontal"
+                    android:text="0"
+                    android:textColor="@color/black"
+                    android:textSize="30dp" />
+            </LinearLayout>
+
         </com.devbrackets.android.exomedia.ui.widget.VideoView>
 
         <LinearLayout

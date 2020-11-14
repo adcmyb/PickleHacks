@@ -13,6 +13,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Chronometer;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -100,7 +101,8 @@ public class GameplayActivity extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_gameplay);
-
+        Chronometer simpleChronometer = (Chronometer) findViewById(R.id.simpleChronometer); // initiate a chronometer
+        simpleChronometer.start();
         initViews();
         initListeners();
 //        Context context = getApplicationContext();
@@ -312,7 +314,7 @@ public class GameplayActivity extends AppCompatActivity {
 
     private void startStream() {
 
-        if (numOfGames >= 10) {
+        if (numOfGames >= 3) {
             Intent intent = new Intent(this, ScoreSingleplayerActivity.class);
             intent.putExtra("SCORE", score);
             startActivity(intent);
@@ -326,7 +328,7 @@ public class GameplayActivity extends AppCompatActivity {
 
         if (numOfGames >= 1) {
             ObjectAnimator animation = ObjectAnimator.ofFloat(videoView, "translationY", -3000f);
-            animation.setDuration(1000);
+            animation.setDuration(3000);
             ObjectAnimator reset = ObjectAnimator.ofFloat(videoView, "translationY", 0);
             reset.setDuration(0);
             AnimatorSet animatorSet = new AnimatorSet();
