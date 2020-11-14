@@ -103,18 +103,18 @@ public class GameplayActivity extends AppCompatActivity {
 
         initViews();
         initListeners();
-        Context context = getApplicationContext();
-        float px = 100 * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
-
-        System.out.println(px);
-
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) videoView.getLayoutParams();
-        params.width = metrics.widthPixels;
-        params.height = metrics.heightPixels;
-        params.leftMargin = 0;
-        videoView.setLayoutParams(params);
+//        Context context = getApplicationContext();
+//        float px = 100 * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+//
+//        System.out.println(px);
+//
+//        DisplayMetrics metrics = new DisplayMetrics();
+//        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+//        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) videoView.getLayoutParams();
+//        params.width = metrics.widthPixels;
+//        params.height = metrics.heightPixels;
+//        params.leftMargin = 0;
+//        videoView.setLayoutParams(params);
 
         startStream();
     }
