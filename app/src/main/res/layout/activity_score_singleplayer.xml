@@ -7,13 +7,21 @@
     android:background="@drawable/oldscreen">
 
 
-    <TextView
-        android:id="@+id/player"
-        android:layout_width="245dp"
-        android:layout_height="160dp"
-        android:layout_marginStart="264dp"
-        android:layout_marginTop="188dp"
-        android:background="@drawable/playernam"
+    <Button
+        android:id="@+id/nav_home"
+        android:layout_width="136dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="579dp"
+        android:layout_marginBottom="355dp"
+        android:backgroundTint="@color/black"
+        android:fontFamily="@font/fontfortitle"
+        android:text="Main Menu"
+        android:textColor="@color/white"
+        android:textSize="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -99,6 +107,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/player"
+        android:layout_width="245dp"
+        android:layout_height="160dp"
+        android:layout_marginStart="264dp"
+        android:layout_marginTop="188dp"
+        android:background="@drawable/playernam"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
