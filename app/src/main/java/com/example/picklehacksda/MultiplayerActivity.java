@@ -9,14 +9,11 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.dynamicanimation.animation.DynamicAnimation;
-import androidx.dynamicanimation.animation.FlingAnimation;
 
 import com.devbrackets.android.exomedia.BuildConfig;
 import com.devbrackets.android.exomedia.listener.OnPreparedListener;
@@ -26,6 +23,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -51,12 +49,12 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import nl.dionsegijn.konfetti.KonfettiView;
 
-public class GameplayActivity extends AppCompatActivity {
+public class MultiplayerActivity extends AppCompatActivity {
 
     private VideoView videoView;
     private ProgressBar pbLoading;
     private Button guess1, guess2, guess3, guess4;
-    private TextView scoreView;
+    private TextView scoreView, scoreView2;
     private boolean hasFocus = true;
     private String guess;
     private KonfettiView konfettiView;
@@ -70,14 +68,16 @@ public class GameplayActivity extends AppCompatActivity {
     private int score = 0;
     private Duration total = null;
     private boolean correct = false;
-    private RelativeLayout relativeLayout;
+    private String gameid = "sdsdgdsdgsdggfdgs";
+    private String uid;
+    private long otherPlayerScore = 0;
 
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     private static final String TAG = "StreamingExample";
 
-    public GameplayActivity() {
+    public MultiplayerActivity() {
     }
 
     @Override
@@ -93,10 +93,74 @@ public class GameplayActivity extends AppCompatActivity {
             Log.e(TAG, "failed to initialize youtubedl-android", e);
         }
 
-        setContentView(R.layout.activity_gameplay);
+        setContentView(R.layout.activity_multiplayer);
 
         initViews();
         initListeners();
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        final String current_user_id = mAuth.getUid();
+
+        db.collection("multiplayer").document("/"+ gameid + "/")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                System.out.println(document.getData());
+                                Log.d(TAG, "Document exists!");
+                                Map<String, Object> game = new HashMap<>();
+                                game.put("uid2", current_user_id);
+                                game.put("uid2_score", 0);
+                                game.put("uid1_score", 0);
+                                uid = "uid2";
+                                db.collection("multiplayer").document("/"+ gameid + "/")
+                                        .set(game, SetOptions.merge())
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                System.out.println("DocumentSnapshot added with ID: " + current_user_id);
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                System.out.println("Error adding document" + e);
+                                            }
+                                        });
+                            } else {
+                                Map<String, Object> game = new HashMap<>();
+                                game.put("uid1", current_user_id);
+                                game.put("uid2_score", 0);
+                                game.put("uid1_score", 0);
+                                uid = "uid1";
+                                db.collection("multiplayer").document("/"+ gameid + "/")
+                                        .set(game, SetOptions.merge())
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                System.out.println("DocumentSnapshot added with ID: " + current_user_id);
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                System.out.println("Error adding document" + e);
+                                            }
+                                        });
+
+
+                                Log.d(TAG, "Document does not exist!");
+                            }
+                            startStream();
+                        } else {
+                            Log.d(TAG, "Failed with: ", task.getException());
+                        }
+                    }
+                });
 
 //        DisplayMetrics metrics = new DisplayMetrics();
 //        getWindowManager().getDefaultDisplay().getMetrics(metrics);
@@ -105,8 +169,6 @@ public class GameplayActivity extends AppCompatActivity {
 //        params.height = metrics.heightPixels;
 //        params.leftMargin = 0;
 //        videoView.setLayoutParams(params);
-
-        startStream();
     }
 
     @Override
@@ -145,7 +207,7 @@ public class GameplayActivity extends AppCompatActivity {
         konfettiView = findViewById(R.id.viewKonfetti);
         root = videoView.getRootView();
         scoreView = findViewById(R.id.score);
-        relativeLayout = findViewById(R.id.relativeLayout);
+        scoreView2 = findViewById(R.id.score2);
     }
 
     private void addEndTime() {
@@ -156,23 +218,23 @@ public class GameplayActivity extends AppCompatActivity {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
         LocalDateTime now = LocalDateTime.now();
 
-        Map<String, Object> game = new HashMap<>();
-        game.put("end_" + numOfGames, dtf.format(now));
-
-        db.collection("users").document(current_user_id + "/games/" + dtf.format(createTime) + "/")
-                .set(game, SetOptions.merge())
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        System.out.println("DocumentSnapshot added with ID: " + current_user_id);
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        System.out.println("Error adding document" + e);
-                    }
-                });
+//        Map<String, Object> game = new HashMap<>();
+//        game.put(uid + "_end_" + numOfGames, dtf.format(now));
+//
+//        db.collection("multiplayer").document("/"+ gameid + "/")
+//                .set(game, SetOptions.merge())
+//                .addOnSuccessListener(new OnSuccessListener<Void>() {
+//                    @Override
+//                    public void onSuccess(Void aVoid) {
+//                        System.out.println("DocumentSnapshot added with ID: " + current_user_id);
+//                    }
+//                })
+//                .addOnFailureListener(new OnFailureListener() {
+//                    @Override
+//                    public void onFailure(@NonNull Exception e) {
+//                        System.out.println("Error adding document" + e);
+//                    }
+//                });
     }
 
     private void initListeners() {
@@ -306,6 +368,31 @@ public class GameplayActivity extends AppCompatActivity {
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         final String current_user_id = mAuth.getUid();
 
+        db.collection("multiplayer").document("/"+ gameid + "/")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                                System.out.println(document.getData());
+                                Log.d(TAG, "Document exists!");
+                                if (uid.equals("uid1")) {
+                                    otherPlayerScore = (Long) document.getData().get("uid2_score");
+                                } else {
+                                    otherPlayerScore = (Long) document.getData().get("uid1_score");
+                                }
+                            } else {
+                                Log.d(TAG, "Document does not exist!");
+                            }
+                        } else {
+                            Log.d(TAG, "Failed with: ", task.getException());
+                        }
+                        scoreView2.setText(Long.toString(otherPlayerScore));
+                    }
+                });
+
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
 
         if (numOfGames >= 1) {
@@ -322,12 +409,12 @@ public class GameplayActivity extends AppCompatActivity {
                 scoreView.setText(Integer.toString(score));
             }
             Map<String, Object> game = new HashMap<>();
-//            game.put("total_" + numOfGames, total.getSeconds());
+//            game.put(uid + "_total_" + numOfGames, total.getSeconds());
             runningTotal += total.getSeconds();
-//            game.put("total", runningTotal);
-            game.put("score", score);
+//            game.put(uid + "_total", runningTotal);
+            game.put(uid + "_score", score);
 
-            db.collection("users").document(current_user_id + "/games/" + dtf.format(createTime) + "/")
+            db.collection("multiplayer").document("/"+ gameid + "/")
                     .set(game, SetOptions.merge())
                     .addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -351,9 +438,9 @@ public class GameplayActivity extends AppCompatActivity {
         Random rand = new Random();
 
 //        Map<String, Object> game = new HashMap<>();
-//        game.put("start_" + numOfGames, dtf.format(start));
+//        game.put(uid + "_start_" + numOfGames, dtf.format(start));
 //
-//        db.collection("users").document(current_user_id + "/games/" + dtf.format(createTime) + "/")
+//        db.collection("multiplayer").document("/"+ gameid + "/")
 //                .set(game, SetOptions.merge())
 //                .addOnSuccessListener(new OnSuccessListener<Void>() {
 //                    @Override
@@ -429,7 +516,7 @@ public class GameplayActivity extends AppCompatActivity {
                                         pbLoading.setVisibility(View.GONE);
                                         String videoUrl = streamInfo.getUrl();
                                         if (TextUtils.isEmpty(videoUrl)) {
-                                            Toast.makeText(GameplayActivity.this, "failed to get stream url", Toast.LENGTH_LONG).show();
+                                            Toast.makeText(MultiplayerActivity.this, "failed to get stream url", Toast.LENGTH_LONG).show();
                                         } else {
                                             setupVideoView(videoUrl);
                                         }
