@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="300dp"
     android:layout_height="match_parent"
-    android:layout_gravity="center">
+    android:layout_gravity="center"
+    tools:context=".SelectGameActivity">
 
     <EditText
         android:id="@+id/gameCode"
@@ -29,10 +30,16 @@
         android:layout_marginTop="50dp"
         android:layout_marginEnd="83dp"
         android:layout_marginBottom="50dp"
+        android:background="@color/orange"
+        android:backgroundTint="@color/orange"
+        android:drawableTint="@color/orange"
+        android:foregroundTint="@color/orange"
         android:text="Join/Create"
+        app:cornerRadius="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gameCode" />
+        app:layout_constraintTop_toBottomOf="@+id/gameCode"
+        app:strokeColor="@color/orange" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

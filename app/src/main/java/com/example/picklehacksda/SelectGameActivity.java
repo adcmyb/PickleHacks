@@ -11,9 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class SelectGameActivity extends AppCompatActivity {
 
-    private TextView scoreView;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

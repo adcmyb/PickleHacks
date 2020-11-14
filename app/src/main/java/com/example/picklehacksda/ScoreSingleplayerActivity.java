@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -28,6 +29,7 @@ import java.util.UUID;
 public class ScoreSingleplayerActivity extends AppCompatActivity {
 
     private TextView scoreView;
+    private Button home;
 
 
     @Override
@@ -37,6 +39,17 @@ public class ScoreSingleplayerActivity extends AppCompatActivity {
         setContentView(R.layout.activity_score_singleplayer);
         scoreView = findViewById(R.id.score);
         scoreView.setText(Integer.toString(score));
+
+        home = findViewById(R.id.nav_home);
+
+        home.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ScoreSingleplayerActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     @Override
