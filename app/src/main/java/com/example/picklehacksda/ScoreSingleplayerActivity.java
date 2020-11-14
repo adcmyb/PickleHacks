@@ -28,7 +28,7 @@ import java.util.UUID;
 
 public class ScoreSingleplayerActivity extends AppCompatActivity {
 
-    private TextView scoreView;
+    private TextView scoreView, player1;
     private Button home;
 
 
@@ -38,8 +38,11 @@ public class ScoreSingleplayerActivity extends AppCompatActivity {
         int score = getIntent().getIntExtra("SCORE", 0);
         setContentView(R.layout.activity_score_singleplayer);
         scoreView = findViewById(R.id.score);
+        player1 = findViewById(R.id.player1);
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth.getCurrentUser().getDisplayName();
         scoreView.setText(Integer.toString(score));
-
+        player1.setText(mAuth.getCurrentUser().getDisplayName());
         home = findViewById(R.id.nav_home);
 
         home.setOnClickListener(new View.OnClickListener() {
