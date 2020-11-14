@@ -6,6 +6,41 @@
     android:layout_height="match_parent"
     android:background="@drawable/oldscreen">
 
+    <Button
+        android:id="@+id/nav_home"
+        android:layout_width="267dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="92dp"
+        android:layout_marginTop="359dp"
+        android:layout_marginEnd="372dp"
+        android:layout_marginBottom="12dp"
+        android:backgroundTint="@color/black"
+        android:fontFamily="@font/fontfortitle"
+        android:text="Main Menu"
+        android:textColor="@color/white"
+        android:textSize="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/multiplayer_button"
+        android:layout_width="267dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="392dp"
+        android:layout_marginTop="359dp"
+        android:layout_marginEnd="72dp"
+        android:layout_marginBottom="12dp"
+        android:backgroundTint="@color/black"
+        android:fontFamily="@font/fontfortitle"
+        android:text="Multiplayer"
+        android:textColor="@color/white"
+        android:textSize="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/scoreboard"
@@ -26,15 +61,15 @@
         android:id="@+id/scoreboard2"
         android:layout_width="200dp"
         android:layout_height="40dp"
+        android:layout_marginStart="448dp"
         android:layout_marginTop="102dp"
+        android:layout_marginEnd="83dp"
         android:layout_marginBottom="269dp"
         android:background="@drawable/playernam"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.743"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/player3"
@@ -53,9 +88,9 @@
         android:id="@+id/player2"
         android:layout_width="199dp"
         android:layout_height="40dp"
-        android:layout_marginStart="396dp"
+        android:layout_marginStart="449dp"
         android:layout_marginTop="102dp"
-        android:layout_marginEnd="136dp"
+        android:layout_marginEnd="83dp"
         android:layout_marginBottom="269dp"
         android:fontFamily="@font/fontfortitle"
         android:gravity="center"
@@ -65,8 +100,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/player1"
@@ -105,13 +139,13 @@
         android:layout_height="193dp"
         android:layout_marginTop="106dp"
         android:layout_marginBottom="52dp"
-        android:background="@drawable/televisheona"
+        android:background="@drawable/televisheona_reflec"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.848"
+        app:layout_constraintHorizontal_bias="0.853"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.966" />
+        app:layout_constraintVertical_bias="0.933" />
 
     <TextView
         android:id="@+id/game_title"
@@ -164,9 +198,9 @@
         android:id="@+id/score2"
         android:layout_width="113dp"
         android:layout_height="57dp"
-        android:layout_marginStart="449dp"
+        android:layout_marginStart="486dp"
         android:layout_marginTop="238dp"
-        android:layout_marginEnd="169dp"
+        android:layout_marginEnd="132dp"
         android:layout_marginBottom="116dp"
         android:fontFamily="@font/fontfortitle"
         android:gravity="center"
