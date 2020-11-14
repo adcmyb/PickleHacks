@@ -17,7 +17,7 @@
         <com.devbrackets.android.exomedia.ui.widget.VideoView
             android:id="@+id/video_view"
             android:layout_width="match_parent"
-            android:layout_height="301dp"
+            android:layout_height="311dp"
             android:layout_gravity="center_horizontal"
             android:foregroundGravity="center_horizontal"
             android:gravity="center_horizontal">
@@ -42,7 +42,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="300px"
+            android:layout_height="100dp"
             android:baselineAligned="false"
             android:foregroundGravity="bottom"
             android:gravity="bottom"

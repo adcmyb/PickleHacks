@@ -69,7 +69,7 @@ public class MultiplayerActivity extends AppCompatActivity {
     private int score = 0;
     private Duration total = null;
     private boolean correct = false;
-    private String gameid = "dfsd";
+    private String gameid = "abc";
     private String uid;
     private long otherPlayerScore = 0;
 
@@ -416,13 +416,18 @@ public class MultiplayerActivity extends AppCompatActivity {
                 scoreView.setText(Integer.toString(score));
             }
 
-            if (numOfGames >= 10) {
+            Map<String, Object> game = new HashMap<>();
+//            game.put(uid + "_total_" + numOfGames, total.getSeconds());
+            runningTotal += total.getSeconds();
+//            game.put(uid + "_total", runningTotal);
+            game.put(uid + "_score", score);
+
+            if (numOfGames >= 3) {
                 Intent intent = new Intent(this, ScoreMultiplayerActivity.class);
                 intent.putExtra("SCORE", score);
                 intent.putExtra("GAMEID", gameid);
                 intent.putExtra("UID", uid);
 
-                Map<String, Object> game = new HashMap<>();
                 game.put(uid + "_done", true);
 
                 db.collection("multiplayer").document("/"+ gameid + "/")
@@ -441,13 +446,8 @@ public class MultiplayerActivity extends AppCompatActivity {
                                 System.out.println("Error adding document" + e);
                             }
                         });
+                return;
             }
-
-            Map<String, Object> game = new HashMap<>();
-//            game.put(uid + "_total_" + numOfGames, total.getSeconds());
-            runningTotal += total.getSeconds();
-//            game.put(uid + "_total", runningTotal);
-            game.put(uid + "_score", score);
 
             db.collection("multiplayer").document("/"+ gameid + "/")
                     .set(game, SetOptions.merge())
