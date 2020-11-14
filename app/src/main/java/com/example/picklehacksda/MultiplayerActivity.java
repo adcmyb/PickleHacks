@@ -121,6 +121,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                                 Log.d(TAG, "Document exists!");
                                 Map<String, Object> game = new HashMap<>();
                                 game.put("uid2", current_user_id);
+                                game.put("uid2_uname", mAuth.getCurrentUser().getDisplayName());
                                 game.put("uid2_score", 0);
                                 game.put("uid1_score", 0);
                                 game.put("uid1_done", false);
@@ -143,8 +144,11 @@ public class MultiplayerActivity extends AppCompatActivity {
                             } else {
                                 Map<String, Object> game = new HashMap<>();
                                 game.put("uid1", current_user_id);
+                                game.put("uid1_uname", mAuth.getCurrentUser().getDisplayName());
                                 game.put("uid2_score", 0);
                                 game.put("uid1_score", 0);
+                                game.put("uid1_done", false);
+                                game.put("uid2_done", false);
                                 uid = "uid1";
                                 db.collection("multiplayer").document("/"+ gameid + "/")
                                         .set(game, SetOptions.merge())
