@@ -1,8 +1,10 @@
 package com.example.picklehacksda;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,7 +24,8 @@ public class ScoreMultiplayerActivity extends AppCompatActivity {
     private static final String TAG = "ScoreMultilplayer";
     private TextView scoreView;
     private TextView scoreView2;
-
+    private Button main, multi;
+    private TextView player1, player2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,27 @@ public class ScoreMultiplayerActivity extends AppCompatActivity {
         scoreView = findViewById(R.id.score);
         scoreView2 = findViewById(R.id.score2);
         scoreView.setText(Integer.toString(score));
+        player1 = findViewById(R.id.player1);
+        player2 = findViewById(R.id.player2);
+
+        main = findViewById(R.id.nav_home);
+        multi = findViewById(R.id.multiplayer_button);
+
+        main.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ScoreMultiplayerActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        multi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(ScoreMultiplayerActivity.this, SelectGameActivity.class);
+                startActivity(intent);
+            }
+        });
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
@@ -51,12 +75,16 @@ public class ScoreMultiplayerActivity extends AppCompatActivity {
                 if (snapshot != null && snapshot.exists()) {
                     System.out.println("Current data: " + snapshot.getData());
                         if (uid.equals("uid1")) {
+                            player1.setText(snapshot.getString("uid1_uname"));
+                            player2.setText(snapshot.getString("uid2_uname"));
                             if (snapshot.getBoolean("uid2_done")) {
                                 scoreView2.setText(Long.toString(snapshot.getLong("uid2_score")));
                             }
                         }
                         else {
                             if (snapshot.getBoolean("uid1_done")) {
+                                player1.setText(snapshot.getString("uid2_uname"));
+                                player2.setText(snapshot.getString("uid1_uname"));
                                 scoreView2.setText(Long.toString(snapshot.getLong("uid1_score")));
                             }
                         }
