@@ -2,12 +2,18 @@ package com.example.picklehacksda;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -97,14 +103,18 @@ public class GameplayActivity extends AppCompatActivity {
 
         initViews();
         initListeners();
+        Context context = getApplicationContext();
+        float px = 100 * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
 
-//        DisplayMetrics metrics = new DisplayMetrics();
-//        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-//        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) videoView.getLayoutParams();
-//        params.width = metrics.widthPixels;
-//        params.height = metrics.heightPixels;
-//        params.leftMargin = 0;
-//        videoView.setLayoutParams(params);
+        System.out.println(px);
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) videoView.getLayoutParams();
+        params.width = metrics.widthPixels;
+        params.height = metrics.heightPixels;
+        params.leftMargin = 0;
+        videoView.setLayoutParams(params);
 
         startStream();
     }
@@ -302,6 +312,12 @@ public class GameplayActivity extends AppCompatActivity {
 
     private void startStream() {
 
+        if (numOfGames >= 10) {
+            Intent intent = new Intent(this, ScoreSingleplayerActivity.class);
+            intent.putExtra("SCORE", score);
+            startActivity(intent);
+        }
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         final String current_user_id = mAuth.getUid();
@@ -318,7 +334,12 @@ public class GameplayActivity extends AppCompatActivity {
             animatorSet.start();
             total = Duration.between(start, end);
             if (correct) {
-                score += 100 + 100 / total.getSeconds();
+                if (total.getSeconds() == 0) {
+                    score += 100 + 100 / 1;
+                }
+                else {
+                    score += 100 + 100 / total.getSeconds();
+                }
                 scoreView.setText(Integer.toString(score));
             }
             Map<String, Object> game = new HashMap<>();
@@ -439,6 +460,7 @@ public class GameplayActivity extends AppCompatActivity {
                                         if (numOfGames == 1) {
                                             numOfGames--;
                                         }
+                                        numOfGames--;
                                         correct = false;
                                         startStream();
                                     });

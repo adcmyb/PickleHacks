@@ -2,6 +2,7 @@ package com.example.picklehacksda;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -68,7 +69,7 @@ public class MultiplayerActivity extends AppCompatActivity {
     private int score = 0;
     private Duration total = null;
     private boolean correct = false;
-    private String gameid = "sdsdgdsdgsdggfdgs";
+    private String gameid = "dfsd";
     private String uid;
     private long otherPlayerScore = 0;
 
@@ -116,6 +117,8 @@ public class MultiplayerActivity extends AppCompatActivity {
                                 game.put("uid2", current_user_id);
                                 game.put("uid2_score", 0);
                                 game.put("uid1_score", 0);
+                                game.put("uid1_done", false);
+                                game.put("uid2_done", false);
                                 uid = "uid2";
                                 db.collection("multiplayer").document("/"+ gameid + "/")
                                         .set(game, SetOptions.merge())
@@ -363,7 +366,6 @@ public class MultiplayerActivity extends AppCompatActivity {
     }
 
     private void startStream() {
-
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
         final String current_user_id = mAuth.getUid();
@@ -405,9 +407,42 @@ public class MultiplayerActivity extends AppCompatActivity {
             animatorSet.start();
             total = Duration.between(start, end);
             if (correct) {
-                score += 100 + 100 / total.getSeconds();
+                if (total.getSeconds() == 0) {
+                    score += 100 + 100 / 1;
+                }
+                else {
+                    score += 100 + 100 / total.getSeconds();
+                }
                 scoreView.setText(Integer.toString(score));
             }
+
+            if (numOfGames >= 10) {
+                Intent intent = new Intent(this, ScoreMultiplayerActivity.class);
+                intent.putExtra("SCORE", score);
+                intent.putExtra("GAMEID", gameid);
+                intent.putExtra("UID", uid);
+
+                Map<String, Object> game = new HashMap<>();
+                game.put(uid + "_done", true);
+
+                db.collection("multiplayer").document("/"+ gameid + "/")
+                        .set(game, SetOptions.merge())
+                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                System.out.println("DocumentSnapshot added with ID: " + current_user_id);
+                                startActivity(intent);
+                                finish();
+                            }
+                        })
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                System.out.println("Error adding document" + e);
+                            }
+                        });
+            }
+
             Map<String, Object> game = new HashMap<>();
 //            game.put(uid + "_total_" + numOfGames, total.getSeconds());
             runningTotal += total.getSeconds();
@@ -526,6 +561,7 @@ public class MultiplayerActivity extends AppCompatActivity {
                                         if (numOfGames == 1) {
                                             numOfGames--;
                                         }
+                                        numOfGames--;
                                         correct = false;
                                         startStream();
                                     });
