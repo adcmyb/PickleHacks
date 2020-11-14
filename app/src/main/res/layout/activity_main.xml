@@ -33,8 +33,6 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="412dp"
-        android:layout_marginTop="10dp"
-
         android:background="@drawable/oldscreen"
 
         />
@@ -69,6 +67,14 @@
         android:fitsSystemWindows="true"
         tools:openDrawer="start">
 
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#00FFFFFF"
+            android:minHeight="0dp"
+            android:theme="?attr/actionBarTheme" />
+
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/nav_view"
             android:layout_width="135dp"
@@ -83,13 +89,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="#00FFFFFF"
-            android:minHeight="0dp"
-            android:theme="?attr/actionBarTheme" />
-
     </androidx.drawerlayout.widget.DrawerLayout>
+
 </RelativeLayout>
