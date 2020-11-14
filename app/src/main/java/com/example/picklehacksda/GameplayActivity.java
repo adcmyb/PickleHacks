@@ -1,18 +1,12 @@
 package com.example.picklehacksda;
 
-import android.content.Context;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.health.SystemHealthManager;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,17 +17,27 @@ import com.devbrackets.android.exomedia.BuildConfig;
 import com.devbrackets.android.exomedia.listener.OnPreparedListener;
 import com.devbrackets.android.exomedia.ui.widget.VideoView;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.yausername.youtubedl_android.YoutubeDL;
 import com.yausername.youtubedl_android.YoutubeDLException;
 import com.yausername.youtubedl_android.YoutubeDLRequest;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.UUID;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -41,17 +45,26 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import nl.dionsegijn.konfetti.KonfettiView;
-import nl.dionsegijn.konfetti.models.Shape;
-import nl.dionsegijn.konfetti.models.Size;
 
 public class GameplayActivity extends AppCompatActivity {
 
     private VideoView videoView;
     private ProgressBar pbLoading;
     private Button guess1, guess2, guess3, guess4;
+    private TextView scoreView;
     private boolean hasFocus = true;
     private String guess;
     private KonfettiView konfettiView;
+    private String uniqueID;
+    private int numOfGames;
+    private LocalDateTime createTime;
+    private View root;
+    private LocalDateTime start;
+    private LocalDateTime end;
+    private int runningTotal = 0;
+    private int score = 0;
+    private Duration total = null;
+    private boolean correct = false;
 
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
@@ -63,7 +76,10 @@ public class GameplayActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        createTime = LocalDateTime.now();
         super.onCreate(savedInstanceState);
+        numOfGames = 0;
+        uniqueID = UUID.randomUUID().toString();
 
         try {
             YoutubeDL.getInstance().init(getApplication());
@@ -76,13 +92,13 @@ public class GameplayActivity extends AppCompatActivity {
         initViews();
         initListeners();
 
-        DisplayMetrics metrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(metrics);
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) videoView.getLayoutParams();
-        params.width = metrics.widthPixels;
-        params.height = metrics.heightPixels;
-        params.leftMargin = 0;
-        videoView.setLayoutParams(params);
+//        DisplayMetrics metrics = new DisplayMetrics();
+//        getWindowManager().getDefaultDisplay().getMetrics(metrics);
+//        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) videoView.getLayoutParams();
+//        params.width = metrics.widthPixels;
+//        params.height = metrics.heightPixels;
+//        params.leftMargin = 0;
+//        videoView.setLayoutParams(params);
 
         startStream();
     }
@@ -121,6 +137,35 @@ public class GameplayActivity extends AppCompatActivity {
         guess3 = findViewById(R.id.guess3);
         guess4 = findViewById(R.id.guess4);
         konfettiView = findViewById(R.id.viewKonfetti);
+        root = videoView.getRootView();
+        scoreView = findViewById(R.id.score);
+    }
+
+    private void addEndTime() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        final String current_user_id = mAuth.getUid();
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+
+        Map<String, Object> game = new HashMap<>();
+        game.put("end_" + numOfGames, dtf.format(now));
+
+        db.collection("users").document(current_user_id + "/games/" + dtf.format(createTime) + "/")
+                .set(game, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("DocumentSnapshot added with ID: " + current_user_id);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("Error adding document" + e);
+                    }
+                });
     }
 
     private void initListeners() {
@@ -128,17 +173,26 @@ public class GameplayActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (guess1.getText().toString().equals(guess)) {
-                    konfettiView.build()
-                            .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
-                            .setDirection(0.0, 359.0)
-                            .setSpeed(1f, 5f)
-                            .setFadeOutEnabled(true)
-                            .setTimeToLive(2000L)
-                            .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE)
-                            .addSizes(new Size(12, 5f))
-                            .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
-                            .streamFor(300, 5000L);
+                    videoView.stopPlayback();
+                    root.setBackgroundColor(getResources().getColor(R.color.green));
+                    correct = true;
+//                    konfettiView.build()
+//                            .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
+//                            .setDirection(0.0, 359.0)
+//                            .setSpeed(1f, 5f)
+//                            .setFadeOutEnabled(true)
+//                            .setTimeToLive(2000L)
+//                            .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE)
+//                            .addSizes(new Size(12, 5f))
+//                            .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
+//                            .streamFor(300, 5000L);
+
                 }
+                else {
+                    correct = false;
+                    root.setBackgroundColor(getResources().getColor(R.color.red));
+                }
+                end = LocalDateTime.now();
                 startStream();
             }
         });
@@ -147,17 +201,25 @@ public class GameplayActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (guess2.getText().toString().equals(guess)) {
-                    konfettiView.build()
-                            .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
-                            .setDirection(0.0, 359.0)
-                            .setSpeed(1f, 5f)
-                            .setFadeOutEnabled(true)
-                            .setTimeToLive(2000L)
-                            .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE)
-                            .addSizes(new Size(12, 5f))
-                            .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
-                            .streamFor(300, 5000L);
+                    correct = true;
+                    videoView.stopPlayback();
+                    root.setBackgroundColor(getResources().getColor(R.color.green));
+//                    konfettiView.build()
+//                            .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
+//                            .setDirection(0.0, 359.0)
+//                            .setSpeed(1f, 5f)
+//                            .setFadeOutEnabled(true)
+//                            .setTimeToLive(2000L)
+//                            .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE)
+//                            .addSizes(new Size(12, 5f))
+//                            .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
+//                            .streamFor(300, 5000L);
                 }
+                else {
+                    correct = false;
+                    root.setBackgroundColor(getResources().getColor(R.color.red));
+                }
+                end = LocalDateTime.now();
                 startStream();
             }
         });
@@ -166,17 +228,25 @@ public class GameplayActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (guess3.getText().toString().equals(guess)) {
-                    konfettiView.build()
-                            .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
-                            .setDirection(0.0, 359.0)
-                            .setSpeed(1f, 5f)
-                            .setFadeOutEnabled(true)
-                            .setTimeToLive(2000L)
-                            .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE)
-                            .addSizes(new Size(12, 5f))
-                            .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
-                            .streamFor(300, 5000L);
+                    correct = true;
+                    videoView.stopPlayback();
+                    root.setBackgroundColor(getResources().getColor(R.color.green));
+//                    konfettiView.build()
+//                            .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
+//                            .setDirection(0.0, 359.0)
+//                            .setSpeed(1f, 5f)
+//                            .setFadeOutEnabled(true)
+//                            .setTimeToLive(2000L)
+//                            .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE)
+//                            .addSizes(new Size(12, 5f))
+//                            .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
+//                            .streamFor(300, 5000L);
                 }
+                else {
+                    correct = false;
+                    root.setBackgroundColor(getResources().getColor(R.color.red));
+                }
+                end = LocalDateTime.now();
                 startStream();
             }
         });
@@ -185,18 +255,27 @@ public class GameplayActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (guess4.getText().toString().equals(guess)) {
-                    konfettiView.build()
-                            .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
-                            .setDirection(0.0, 359.0)
-                            .setSpeed(1f, 5f)
-                            .setFadeOutEnabled(true)
-                            .setTimeToLive(2000L)
-                            .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE)
-                            .addSizes(new Size(12, 5f))
-                            .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
-                            .streamFor(300, 5000L);
+                    correct = true;
+                    videoView.stopPlayback();
+                    root.setBackgroundColor(getResources().getColor(R.color.green));
+//                    konfettiView.build()
+//                            .addColors(Color.YELLOW, Color.GREEN, Color.MAGENTA)
+//                            .setDirection(0.0, 359.0)
+//                            .setSpeed(1f, 5f)
+//                            .setFadeOutEnabled(true)
+//                            .setTimeToLive(2000L)
+//                            .addShapes(Shape.Square.INSTANCE, Shape.Circle.INSTANCE)
+//                            .addSizes(new Size(12, 5f))
+//                            .setPosition(-50f, konfettiView.getWidth() + 50f, -50f, -50f)
+//                            .streamFor(300, 5000L);
                 }
+                else {
+                    correct = false;
+                    root.setBackgroundColor(getResources().getColor(R.color.red));
+                }
+                end = LocalDateTime.now();
                 startStream();
+
             }
         });
 
@@ -215,10 +294,64 @@ public class GameplayActivity extends AppCompatActivity {
     }
 
     private void startStream() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        final String current_user_id = mAuth.getUid();
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM-dd-yyyy HH:mm:ss");
+
+        if (numOfGames >= 1) {
+            total = Duration.between(start, end);
+            if (correct) {
+                score += 100 + 100 / total.getSeconds();
+                scoreView.setText(Integer.toString(score));
+            }
+            Map<String, Object> game = new HashMap<>();
+            game.put("total_" + numOfGames, total.getSeconds());
+            runningTotal += total.getSeconds();
+            game.put("total", runningTotal);
+            game.put("score", score);
+
+            db.collection("users").document(current_user_id + "/games/" + dtf.format(createTime) + "/")
+                    .set(game, SetOptions.merge())
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            System.out.println("DocumentSnapshot added with ID: " + current_user_id);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            System.out.println("Error adding document" + e);
+                        }
+                    });
+        }
+
+        start = LocalDateTime.now();
+        numOfGames++;
+
         List<List<String>> urls = new ArrayList<>();
         List<String> guesses = new ArrayList<>();
         Random rand = new Random();
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        Map<String, Object> game = new HashMap<>();
+        game.put("start_" + numOfGames, dtf.format(start));
+
+        db.collection("users").document(current_user_id + "/games/" + dtf.format(createTime) + "/")
+                .set(game, SetOptions.merge())
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        System.out.println("DocumentSnapshot added with ID: " + current_user_id);
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        System.out.println("Error adding document" + e);
+                    }
+                });
 
         int min = 0;
         int max = 3;
@@ -268,6 +401,7 @@ public class GameplayActivity extends AppCompatActivity {
                             String url = urls.get(randAd).get(randUrl);
                             System.out.println(url);
                             pbLoading.setVisibility(View.VISIBLE);
+                            root.setBackgroundColor(getResources().getColor(R.color.black));
                             Disposable disposable = Observable.fromCallable(() -> {
                                 YoutubeDLRequest request = new YoutubeDLRequest(url);
                                 // best stream containing video+audio
@@ -287,7 +421,11 @@ public class GameplayActivity extends AppCompatActivity {
                                     }, e -> {
                                         if(BuildConfig.DEBUG) Log.e(TAG,  "failed to get stream info", e);
                                         pbLoading.setVisibility(View.GONE);
-                                        Toast.makeText(GameplayActivity.this, "streaming failed. failed to get stream info", Toast.LENGTH_LONG).show();
+                                        if (numOfGames == 1) {
+                                            numOfGames--;
+                                        }
+                                        correct = false;
+                                        startStream();
                                     });
                             compositeDisposable.add(disposable);
 
