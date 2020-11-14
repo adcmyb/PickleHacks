@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
 import android.view.Window;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
@@ -47,8 +49,21 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+        TextView textView = findViewById(R.id.game_title);
+        textView.startAnimation(AnimationUtils.loadAnimation(MainActivity.this, R.anim.pulse));
+
         Button button = findViewById(R.id.quickplay_button);
         button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                Toast.makeText(FriendsActivity.this, "Clicked add", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(MainActivity.this, GameplayActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        Button button2 = findViewById(R.id.multiplayer_button);
+        button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                Toast.makeText(FriendsActivity.this, "Clicked add", Toast.LENGTH_SHORT).show();

@@ -10,7 +10,7 @@ public class SlideshowViewModel extends ViewModel {
 
     public SlideshowViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is slideshow fragment");
+        mText.setValue("About Us: AdMe is a game developed with the desire to create joy out of something mundane.");
     }
 
     public LiveData<String> getText() {
