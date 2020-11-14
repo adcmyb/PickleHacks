@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:fontFamily="@font/fffforwa"
+        android:fontFamily="@font/fontfortitle"
         android:text="AdMe"
         android:textColor="#000000"
         android:textSize="40sp"
