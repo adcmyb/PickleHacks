@@ -69,4 +69,5 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.10'
     compile 'com.github.Q42:AndroidScrollingImageView:1.2'
     implementation 'androidx.dynamicanimation:dynamicanimation:1.0.0'
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.19'
 }
