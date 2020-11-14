@@ -26,7 +26,9 @@ import com.yausername.youtubedl_android.YoutubeDL;
 import com.yausername.youtubedl_android.YoutubeDLException;
 import com.yausername.youtubedl_android.YoutubeDLRequest;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -118,7 +120,8 @@ public class GameplayActivity extends AppCompatActivity {
     }
 
     private void startStream() {
-        String url = "https://www.youtube.com/watch?v=dyQMsjU7laE";
+        List<List<String>> advertisers = new ArrayList<>();
+        Random rand = new Random();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("advertisers")
@@ -127,35 +130,43 @@ public class GameplayActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-//                            int i = rand.nextInt(1000);
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                System.out.println(document.getId() + " => " + document.getData());
-                                List<String> urls = (List<String>) document.get("urls");
-//                                url = urls[0];
-                                pbLoading.setVisibility(View.VISIBLE);
-                                Disposable disposable = Observable.fromCallable(() -> {
-                                    YoutubeDLRequest request = new YoutubeDLRequest(url);
-                                    // best stream containing video+audio
-                                    request.addOption("-f", "best");
-                                    return YoutubeDL.getInstance().getInfo(request);
-                                })
-                                        .subscribeOn(Schedulers.newThread())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(streamInfo -> {
-                                            pbLoading.setVisibility(View.GONE);
-                                            String videoUrl = streamInfo.getUrl();
-                                            if (TextUtils.isEmpty(videoUrl)) {
-                                                Toast.makeText(GameplayActivity.this, "failed to get stream url", Toast.LENGTH_LONG).show();
-                                            } else {
-                                                setupVideoView(videoUrl);
-                                            }
-                                        }, e -> {
-                                            if(BuildConfig.DEBUG) Log.e(TAG,  "failed to get stream info", e);
-                                            pbLoading.setVisibility(View.GONE);
-                                            Toast.makeText(GameplayActivity.this, "streaming failed. failed to get stream info", Toast.LENGTH_LONG).show();
-                                        });
-                                compositeDisposable.add(disposable);
+                                advertisers.add((List<String>) document.getData().get("urls"));
                             }
+                            int min = 0;
+                            int max = advertisers.size() - 1;
+                            int randNum = rand.nextInt(max - min + 1) + min;
+
+                            min = 0;
+                            max = advertisers.get(randNum).size() - 1;
+                            int randNum2 = rand.nextInt(max - min + 1) + min;
+
+                            String url = advertisers.get(randNum).get(randNum2);
+                            System.out.println(url);
+                            pbLoading.setVisibility(View.VISIBLE);
+                            Disposable disposable = Observable.fromCallable(() -> {
+                                YoutubeDLRequest request = new YoutubeDLRequest(url);
+                                // best stream containing video+audio
+                                request.addOption("-f", "best");
+                                return YoutubeDL.getInstance().getInfo(request);
+                            })
+                                    .subscribeOn(Schedulers.newThread())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(streamInfo -> {
+                                        pbLoading.setVisibility(View.GONE);
+                                        String videoUrl = streamInfo.getUrl();
+                                        if (TextUtils.isEmpty(videoUrl)) {
+                                            Toast.makeText(GameplayActivity.this, "failed to get stream url", Toast.LENGTH_LONG).show();
+                                        } else {
+                                            setupVideoView(videoUrl);
+                                        }
+                                    }, e -> {
+                                        if(BuildConfig.DEBUG) Log.e(TAG,  "failed to get stream info", e);
+                                        pbLoading.setVisibility(View.GONE);
+                                        Toast.makeText(GameplayActivity.this, "streaming failed. failed to get stream info", Toast.LENGTH_LONG).show();
+                                    });
+                            compositeDisposable.add(disposable);
+
                         } else {
                             Log.w(TAG, "Error getting documents.", task.getException());
                         }
@@ -164,9 +175,6 @@ public class GameplayActivity extends AppCompatActivity {
 
 
 //        String url = etUrl.getText().toString().trim();
-        if (TextUtils.isEmpty(url)) {
-            return;
-        }
 
 
     }
